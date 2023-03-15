@@ -1,22 +1,22 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="dark" style="background-image: url({% static 'webchatapp/assets/banner.jpg' %}); background-position: center;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'index' %}">
-            WebChatAp
+            <b>WebChatApp</b>
         </a>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'profile' %}"> Profile</a>
+                <a class="nav-link" href="{% url 'profile' %}"> <u><b>Profile</b></u></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'messages' %}"> Messages</a>
+                <a class="nav-link" href="{% url 'messages' %}"> <u><b>Messages</b></u></a>
             </li>
         </ul>
-        <li style="background-image: url({% static 'webchatapp/assets/banner.jpg' %}); background-position: center;"
+        <a
             class="nav-item" >
-            <a class="nav-link" href="{% url 'logout' %}"> Sign Out</a>
-        </li>
+            <a class="nav-link" href="{% url 'logout' %}"> <b><u>Sign Out</u></b></a>
+        </a>
     </div>
 </nav>
