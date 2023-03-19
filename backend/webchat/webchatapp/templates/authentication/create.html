@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1> <b>Create a new user:</b></h1>
+<br>
+<br>
+
+<form>
+    <div class="row g-3 align-items-center">
+        <div class="row-cols-10">
+            <label for="inputUsername" class="form-label">Username*</label>
+            <input type="email" class="form-control" id="inputUsername" aria-describedby="usernameHelpInline">
+            <div id="usernameHelpInline" class="form-text">Must be 3-15 characters long. Cannot contain special characters (!,:,{} etc.).</div>
+        </div>
+
+    <br>
+    <br>
+        <div class="row-cols-10">
+            <label for="inputPassword" class="col-form-label">Password*</label>
+            <input type="password" id="inputPassword" class="form-control" aria-describedby="passwordHelpInline">
+            <span id="passwordHelpInline" class="form-text">
+            Must be 8-20 characters long.
+            </span>
+        </div>
+
+        <div class="row-cols-10">
+            <label for="inputPasswordConfirm" class="col-form-label">Confirm Password*</label>
+            <input type="password" id="inputPasswordConfirm" class="form-control" aria-describedby="passwordHelpInline">
+        </div>
+        <br>
+        <div class="row-cols-10">
+        <button type="submit" class="btn btn-primary">Submit</button></div>
+    </div>
+</form>
+
+{% endblock %}

@@ -4,8 +4,10 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('messages', views.messages, name='messages'),
+    path('chat', views.chat, name='chat'),
     path('profile', views.profile, name='profile'),
-    #path('login/', login_view, name='login'),
-    path('logout', views.logout, name='logout'),
+    #path('create', views.create, name='create'),
+    path('login', views.login_user, name='login'),
+    #path('logout', views.logout, name='logout'),
+    #path("", TemplateView.as_view(template_name="index.html"), name="home"),
 ]
