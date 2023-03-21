@@ -14,9 +14,21 @@
                 <a class="nav-link" href="{% url 'chat' %}"> <u><b>Chat</b></u></a>
             </li>
         </ul>
+        {% if user.is_authenticated %}
+        <a
+            class="nav-item" >
+            <a class="nav-link" href="{% url 'logout' %}"> <b><u>Sign Out</u></b></a>
+        </a>
+        {% else %}
+        <a
+            class="nav-item" >
+            <a class="nav-link" href="{% url 'create' %}"> <b><u>Register</u></b></a>
+        </a>
+       
         <a
             class="nav-item" >
             <a class="nav-link" href="{% url 'login' %}"> <b><u>Sign In</u></b></a>
         </a>
+        {% endif %}
     </div>
 </nav>

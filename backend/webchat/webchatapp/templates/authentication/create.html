@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
+
+
+{% if form.errors %}
+<p> Something went wrong with the form</p>
+{% endif %}
+
 <h1> <b>Create a new user:</b></h1>
 <br>
 <br>
-
+<form action="{% url 'create' %}" method=POST> {% csrf_token %} 
+    {{ form.as_p }}
 <form>
     <div class="row g-3 align-items-center">
         <div class="row-cols-10">

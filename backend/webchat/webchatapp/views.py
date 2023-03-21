@@ -3,6 +3,7 @@ from .models import User
 from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 def index(request):
@@ -14,11 +15,6 @@ def chat(request):
 def profile(request):
     return render(request, 'profile.html', {})
 
-#def logout(request):
-    #return render(request, 'logout.html', {})
-
-#def login(request):
-    #return render(request, 'authentication/login.html', {})
 
 '''def create(request):
     if request.method == 'POST':
@@ -42,18 +38,40 @@ def profile(request):
 
 def login_user(request):
     if request.method == "POST":
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                # A backend authenticated the credentials
-                login(request, user)
-                return redirect('index')
-            else:
-                # No backend authenticated the credentials
-                messages.error(request, ("Error login"))
-                return redirect('login')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            # A backend authenticated the credentials
+            login(request, user)
+            return redirect('index')
+        else:
+            # No backend authenticated the credentials
+            messages.error(request, ("Error login"))
+            return redirect('login')
     else:
         return render(request, 'authentication/login.html', {})
 
 
+def register_user(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            passwordConfirm = form.cleaned_data['passwordConfirm']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, ("Successfully created a new user!"))
+            return redirect('index')
+        else:
+            form = UserCreationForm
+
+    return render(request, 'authentication/create.html', {})
+
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, ("Log out successfully!"))
+    return redirect('index')
