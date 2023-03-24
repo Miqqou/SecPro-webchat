@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import User
+#from .models import User
 from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
-def index(request):
+def home(request):
     return render(request, 'index.html', {})
 
 def chat(request):
@@ -55,20 +55,25 @@ def login_user(request):
 
 def register_user(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            passwordConfirm = form.cleaned_data['passwordConfirm']
+            password = form.cleaned_data['password1']
+            #passwordConfirm = form.cleaned_data['passwordConfirm']
             user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, ("Successfully created a new user!"))
-            return redirect('index')
-        else:
-            form = UserCreationForm
+            if user is not None:
+                login(request, user)
+                messages.success(request, ("Successfully created a new user!"))
+                return redirect('index')
+            else:
+                # No backend authenticated the credentials
+                messages.error(request, ("Error registering"))
+                return redirect('create')
+    else:
+        form = UserRegistrationForm
 
-    return render(request, 'authentication/create.html', {})
+    return render(request, 'authentication/create.html', {'form':form})
 
 
 def logout_user(request):
