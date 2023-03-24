@@ -44,7 +44,7 @@ def login_user(request):
         if user is not None:
             # A backend authenticated the credentials
             login(request, user)
-            return redirect('index')
+            return redirect('home')
         else:
             # No backend authenticated the credentials
             messages.error(request, ("Error login"))
@@ -65,7 +65,7 @@ def register_user(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, ("Successfully created a new user!"))
-                return redirect('index')
+                return redirect('home')
             else:
                 # No backend authenticated the credentials
                 messages.error(request, ("Error registering"))
@@ -79,4 +79,4 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, ("Log out successfully!"))
-    return redirect('index')
+    return redirect('home')
