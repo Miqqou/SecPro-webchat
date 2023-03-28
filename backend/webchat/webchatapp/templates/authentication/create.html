@@ -3,7 +3,12 @@
 
 
 {% if form.errors %}
-<p> Something went wrong with the form</p>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    Something went wrong with form!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 {% endif %}
 
 <h1> <b>Create a new user:</b></h1>
