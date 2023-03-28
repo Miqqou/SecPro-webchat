@@ -4,14 +4,18 @@ from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def home(request):
     return render(request, 'index.html', {})
 
+@login_required
 def chat(request):
     return render(request, 'chat.html', {})
 
+@login_required
 def profile(request):
     return render(request, 'profile.html', {})
 
@@ -75,7 +79,7 @@ def register_user(request):
 
     return render(request, 'authentication/create.html', {'form':form})
 
-
+@login_required
 def logout_user(request):
     logout(request)
     messages.success(request, ("Log out successfully!"))
