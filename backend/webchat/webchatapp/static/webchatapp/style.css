@@ -5,3 +5,7 @@ h1 {
 a nav-link{
     color:cyan;
 }
+
+.boxed {
+    border: 1px solid red ;
+  }

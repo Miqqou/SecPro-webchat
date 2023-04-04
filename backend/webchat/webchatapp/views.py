@@ -1,44 +1,25 @@
+import os
+from django.utils import timezone
 from django.shortcuts import render, redirect
-#from .models import User
+from .models import Message, PublicKey
 from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+import django.contrib.auth.hashers as hasher
 
 
 # Create your views here.
 def home(request):
     return render(request, 'index.html', {})
 
-@login_required
-def chat(request):
-    return render(request, 'chat.html', {})
 
 @login_required
 def profile(request):
     return render(request, 'profile.html', {})
 
-
-'''def create(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm.objects.get(username=username)
-        if form.is_valid():
-            user = form.save(commit=False)
-            username = request.POST.get('inputUsername')
-            password = request.POST.get('inputPassword')
-            passwordConfirm = request.get('inputPasswordConfirm')
-            print(username, password)
-
-            if password == passwordConfirm:
-                form.save()
-            else:
-                print("passwords not matching")
-
-    else:
-        form = UserRegistrationForm()
-    
-    return render(request, 'authentication/create.html', {'form': form})'''
 
 def login_user(request):
     if request.method == "POST":
@@ -84,3 +65,44 @@ def logout_user(request):
     logout(request)
     messages.success(request, ("Log out successfully!"))
     return redirect('home')
+
+
+def encrypt_message(message, key):
+    salt = os.urandom(16)
+
+    password_hash = hasher.make_password(key, salt=str(salt), hasher='argon2')
+
+    print(hasher.check_password(key,password_hash))
+
+    # TODO
+    # message hash with 'password_hash as pub'
+
+
+    print(password_hash)
+    return password_hash
+
+
+@login_required
+def chat(request):
+    if request.method == 'POST':
+        recipient = request.POST['recipient']
+        content = request.POST['content']
+        recipient_user = User.objects.get(username=recipient)
+
+        # Encrypt message content
+        #ph = hasher.Argon2PasswordHasher
+        #encrypted_content, salt = ph.encode(password=content,salt= os.urandom(16))
+
+        message = Message(sender=request.user, recipient=recipient_user, content=encrypt_message(content, "12345"), created_at=timezone.now())
+        message.save()
+        return redirect('chat')
+    
+    messages1 = Message.objects.filter(recipient=request.user).order_by('-created_at')
+    for message in messages1:
+        try:
+            # TODO decrypt message content with your password
+            message.content = verify(message.content, content)
+        except Exception:
+            message.content = 'Message content could not be decrypted.'
+
+    return render(request, 'chat.html', {'messages1': messages1})

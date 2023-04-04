@@ -1,6 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="boxed">
+  <h1>Messages</h1>
+
+    {% if messages1 %}
+      <ul>
+        <div class="overflow-auto"></div>
+        {% for message in messages1 %}
+            <li>
+              <strong>From:</strong> <p style="color:blue;font-size:20px"><b>
+                {{ message.sender.username }}</b>@ {{ message.sent_at }}</p>
+                {{ message.content }}<br><br>
+            </li>
+        {% endfor %}
+        </div>
+
+      </ul>
+    {% else %}
+      <p>You have no messages.</p>
+    {% endif %}
+  </div>
+
+
   <h2>Send Message</h2>
   <form method="post">
     {% csrf_token %}
