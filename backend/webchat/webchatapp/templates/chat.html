@@ -7,7 +7,7 @@
 
     {% if messages1 %}
       <ul>
-        <div class="overflow-auto"></div>
+        <div class="overflow-auto">
         {% for message in messages1 %}
             <li>
               <strong>From:</strong> <p style="color:blue;font-size:20px"><b>
@@ -17,23 +17,32 @@
         {% endfor %}
         </div>
 
-      </ul>
+
     {% else %}
       <p>You have no messages.</p>
     {% endif %}
 </div>
 
-
+<br>
 <div class="boxed">
+  <div class="overflow-auto"></div>
   <h2>Send Message</h2>
   <form method="post">
     {% csrf_token %}
+
     <label for="recipient">Recipient (username):</label>
+    <select class="form-select" name="Recipient"> 
+      {%for sender in senders%}
+      <option value="1"> {{ sender.username }} </option>
+    </select>
+    {% endfor %}
+    
     <input type="text" id="recipient" name="recipient"><br>
     <label for="content">Message:</label>
-    <textarea id="content" name="content" rows="10" cols="50"></textarea><br>
+    <textarea id="content" name="content" rows="6" cols="50"></textarea><br>
     <input type="submit" value="Send">
   </form>
+</div>
 </div>
 
 {% endblock %}

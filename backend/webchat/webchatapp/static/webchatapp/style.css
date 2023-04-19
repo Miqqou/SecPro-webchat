@@ -8,4 +8,7 @@ a nav-link{
 
 .boxed {
     border: 2px solid blue;
+    height: 450px;
+    overflow: auto;
+    align-items: center;
   }

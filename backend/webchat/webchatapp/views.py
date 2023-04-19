@@ -89,15 +89,19 @@ def chat(request):
         content = request.POST['content']
         recipient_user = User.objects.get(username=recipient)
 
-        # Encrypt message content
-        #ph = hasher.Argon2PasswordHasher
-        #encrypted_content, salt = ph.encode(password=content,salt= os.urandom(16))
-
-        message = Message(sender=request.user, recipient=recipient_user, content=encrypt_message(content, "12345"), created_at=timezone.now())
+        message = Message(sender=request.user, recipient=recipient_user, 
+                          content=encrypt_message(content, "12345"), 
+                          created_at=timezone.now())
         message.save()
         return redirect('chat')
     
+    # Set of messaging partners of user
     messages1 = Message.objects.filter(recipient=request.user).order_by('-created_at')
+    senders = set()
+    for message in messages1:
+        sender = message.sender
+        senders.add(sender)
+
     for message in messages1:
         try:
             # TODO decrypt message content with your password
@@ -105,4 +109,4 @@ def chat(request):
         except Exception:
             message.content = 'Message content could not be decrypted.'
 
-    return render(request, 'chat.html', {'messages1': messages1})
+    return render(request, 'chat.html', {'messages1': messages1, 'senders': senders})
