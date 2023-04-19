@@ -2,8 +2,25 @@
 
 {% block content %}
 
+<!-- TODO: Select partner, messages(user, partner)-->
+<h1>Messages with (?)</h1>
+<div class="container">
+  <label for="recipient">Recipient (username):</label>
+  <input type="text" id="recipient" name="recipient"><br>
+<a> OR</a>
+<br>
+<label for="form-select">Select from recent chatters: </label>
+<select class="form-select" name="Recipient"> 
+  {%for sender in senders%}
+  <option value="1"> {{ sender.username }} </option>
+</select>
+{% endfor %}
+</div>
+<br>
+
+<h1>Messages</h1>
 <div class="boxed">
-  <h1>Messages</h1>
+
 
     {% if messages1 %}
       <ul>
@@ -24,20 +41,14 @@
 </div>
 
 <br>
+<h2>Send Message</h2>
 <div class="boxed">
   <div class="overflow-auto"></div>
-  <h2>Send Message</h2>
+
   <form method="post">
     {% csrf_token %}
 
-    <label for="recipient">Recipient (username):</label>
-    <select class="form-select" name="Recipient"> 
-      {%for sender in senders%}
-      <option value="1"> {{ sender.username }} </option>
-    </select>
-    {% endfor %}
-    
-    <input type="text" id="recipient" name="recipient"><br>
+
     <label for="content">Message:</label>
     <textarea id="content" name="content" rows="6" cols="50"></textarea><br>
     <input type="submit" value="Send">

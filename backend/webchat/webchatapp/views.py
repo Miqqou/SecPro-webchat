@@ -1,7 +1,7 @@
 import os
 from django.utils import timezone
 from django.shortcuts import render, redirect
-from .models import Message, PublicKey
+from .models import Message, UserKey
 from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages

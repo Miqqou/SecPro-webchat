@@ -6,23 +6,13 @@ from django.contrib.auth.models import User
 
 from django.forms import ValidationError
 
-# Model for public key.
-class PublicKey(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='public_key')
-    key = models.BinaryField()
+
+# Extended User model with public key.
+class UserKey(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    key = models.BinaryField(null= True)
 
 
-# Extended User model.
-class UserExtend(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-
-
-    '''def encryptPassword(self, password):
-        salt = os.urandom(16)
-        
-        hashedPassword = hasher.make_password(password, salt=salt, hasher='argon2')
-
-        return hashedPassword'''
 
 class MessageManager(models.Manager):
     def get_queryset(self):
