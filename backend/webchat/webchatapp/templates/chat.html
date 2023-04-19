@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="boxed">
   <h1>Messages</h1>
 
@@ -20,9 +21,10 @@
     {% else %}
       <p>You have no messages.</p>
     {% endif %}
-  </div>
+</div>
 
 
+<div class="boxed">
   <h2>Send Message</h2>
   <form method="post">
     {% csrf_token %}
@@ -32,4 +34,6 @@
     <textarea id="content" name="content" rows="10" cols="50"></textarea><br>
     <input type="submit" value="Send">
   </form>
+</div>
+
 {% endblock %}

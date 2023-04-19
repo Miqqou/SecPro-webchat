@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-il(ryh2!q@v-e_6e1#qkd46ow8!@d!y4#v2-3pekgueywyp-)1
 DEBUG = True
 
 ALLOWED_HOSTS = []
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 # Application definition
