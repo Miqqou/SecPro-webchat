@@ -5,12 +5,12 @@
 <!-- TODO: Select partner, messages(user, partner)-->
 <h1>Messages with (?)</h1>
 <div class="container">
-  <label for="recipient">Recipient (username):</label>
-  <input type="text" id="recipient" name="recipient"><br>
+  <label for="recipient2">Recipient (username):</label>
+  <input type="text" id="recipient2" name="recipient2"><br>
 <a> OR</a>
 <br>
 <label for="form-select">Select from recent chatters: </label>
-<select class="form-select" name="Recipient"> 
+<select class="form-select" name="recipient"> 
   {%for sender in senders%}
   <option value="1"> {{ sender.username }} </option>
 </select>
