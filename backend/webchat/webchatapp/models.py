@@ -10,7 +10,8 @@ from django.forms import ValidationError
 # Extended User model with public key.
 class UserKey(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    key = models.BinaryField(null= True)
+    publicKey = models.BinaryField(null= True)
+    privateCryptedKey = models.BinaryField(null= True)
 
 
 
