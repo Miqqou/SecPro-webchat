@@ -24,9 +24,7 @@ def home(request):
 
 @login_required
 def profile(request):
-    user_keys = UserKey.objects.get(user=request.user)
-    user_public_key = user_keys.publicKey
-    return render(request, 'profile.html', { 'publickey':user_public_key})
+    return render(request, 'profile.html', {})
 
 
 def login_user(request):
@@ -133,7 +131,6 @@ def encrypt_message(message, receiver):
     receiver_keys = UserKey.objects.get(user=receiver)
     receiver_public_key = receiver_keys.publicKey
     public_key = serialization.load_pem_public_key(receiver_public_key)
-    print("alkuperäinen pituus visille:", len(message))
 
     # Encoding Bytes
     message_encoded = message.encode('UTF-8')
@@ -206,21 +203,31 @@ def chat(request):
 def inbox(request):        
     # Set of messaging partners of user
     messages1 = Message.objects.filter(recipient=request.user).order_by('-created_at')
+    messages2 = messages1
+
+    number_of_messages = 0
+
     senders = set()
     for message in messages1:
         sender = message.sender
         senders.add(sender)
+        if message.read_at != "":
+            number_of_messages +=1
+
 
     if request.method == 'POST':
-        for message in messages1:
-            #try:
-            # TODO decrypt message content with your password
-            password = bytes(request.POST['password'], 'UTF-8')
-            print(len(message.content))
-            message.content = decrypt_message(message.content, request.user, password)
-                 
-            #except Exception:
-                #message.content = '<This message is protected>'
-                
-        
-    return render(request, 'messages.html', {'messages1': messages1, 'senders': senders})
+        try:
+            for message in messages1:
+                password = bytes(request.POST['password'], 'UTF-8')
+                message.content = decrypt_message(message.content, request.user, password)
+
+                message.read_at = timezone.now()
+
+            return render(request, 'messages.html', {'messages1': messages1, 'senders': senders}) 
+                        
+        except Exception:
+            messages.error(request, ("Wrong password, couldn't decrypt!"))
+            return render(request, 'messages.html', {})   
+            
+    else:
+        return render(request, 'messages.html', {'number_of_messages' : number_of_messages}) 

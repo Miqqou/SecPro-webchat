@@ -8,7 +8,7 @@
     {% csrf_token %}
     <label for="password">Password:</label>
   <input type="password" id="password" name="password">
-  <input type="submit" value="Send">
+  <input type="submit" value="Unlock messages">
 </form>
     {% if messages1%}
       <ul>
@@ -24,7 +24,7 @@
 
 
     {% else %}
-      <p>You have no messages.</p>
+      <p>You have {{number_of_messages }} messages.</p>
     {% endif %}
 </div>
 
