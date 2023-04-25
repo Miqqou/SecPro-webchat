@@ -53,8 +53,16 @@ def generate_keys_from_password(password):
     # Generate private_key
     privateKey = rsa.generate_private_key(
     public_exponent=65537,
-    key_size=2048,
+    key_size=4096,
     )
+
+    encryption_algorithm = serialization.BestAvailableEncryption(password)
+
+    private_key_enrypted = privateKey.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=encryption_algorithm,
+        )
 
 
     # Public key format.
@@ -73,9 +81,9 @@ def generate_keys_from_password(password):
     )
     key = base64.urlsafe_b64encode(kdf.derive(password))
 
-    private_key_enrypted = Fernet(key).encrypt(bytes(str(privateKey), 'UTF-8'))
+    private_key_enrypted = Fernet(key).encrypt(private_key_enrypted)
 
-    return publicKey, private_key_enrypted 
+    return publicKey, private_key_enrypted, salt 
 
 
 
@@ -87,7 +95,7 @@ def register_user(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
 
-            public_key, private_key_enrypted = generate_keys_from_password(password)
+            public_key, private_key_enrypted, salt = generate_keys_from_password(password)
 
 
 
@@ -96,7 +104,9 @@ def register_user(request):
 
 
             if user is not None:
-                userkey = UserKey(user=user, publicKey=public_key, privateCryptedKey=private_key_enrypted)
+                userkey = UserKey(user=user, publicKey=public_key, 
+                                  privateCryptedKey=private_key_enrypted,
+                                  salt=salt)
                 userkey.save()
 
                 login(request, user)
@@ -119,21 +129,58 @@ def logout_user(request):
 
 
 def encrypt_message(message, receiver):
+
     receiver_keys = UserKey.objects.get(user=receiver)
     receiver_public_key = receiver_keys.publicKey
+    public_key = serialization.load_pem_public_key(receiver_public_key)
+    print("alkuperäinen pituus visille:", len(message))
+
+    # Encoding Bytes
+    message_encoded = message.encode('UTF-8')
 
     # Crypting the message with receiver's public key.
-    ciphertext = receiver_public_key.encrypt(
-    message,
-    padding.OAEP(
-        mgf=padding.MGF1(algorithm=hashes.SHA256()),
-        algorithm=hashes.SHA256(),
-        label=None
+    encrypted_message = public_key.encrypt(
+        message_encoded,
+        padding.PKCS1v15()
     )
-)
 
-    print(ciphertext)
-    return ciphertext
+    return encrypted_message
+
+def decrypt_message(encrypted_message, user, pw):
+    user_keys = UserKey.objects.get(user=user)
+    user_private_key_encrypted = user_keys.privateCryptedKey
+    salt = user_keys.salt
+
+
+    '''private_key = serialization.load_pem_private_key(
+        user_private_key_encrypted,
+        password=pw # If the private key is not password-protected
+        )'''
+
+    # derive the Fernet key from the password and salt
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(pw))
+
+    private_key = Fernet(key).decrypt(user_private_key_encrypted)
+
+    private_key = serialization.load_pem_private_key(
+        private_key,
+        password=pw
+        )
+    # 512 byte key - 11 byte padding = 501 byte key.
+    # ensuring that the message is shorter than 501 bytes.
+    decrypted_message = private_key.decrypt(
+        encrypted_message,
+        padding.PKCS1v15()
+        )
+
+    return decrypted_message.decode('UTF-8')
+
 
 
 @login_required
@@ -143,12 +190,20 @@ def chat(request):
         content = request.POST['content']
         recipient_user = User.objects.get(username=recipient)
 
-        message = Message(sender=request.user, recipient=recipient_user, 
-                          content=encrypt_message(content, recipient_user), 
-                          created_at=timezone.now())
-        message.save()
-        return redirect('chat')
+        if len(content) > 500:
+            messages.error(request, ("Too long message! 500 char max"))
+        else:
+            message = Message(sender=request.user, recipient=recipient_user, 
+                            content=encrypt_message(content, recipient_user), 
+                            created_at=timezone.now())
+            message.save()
+            return redirect('chat')
     
+    return render(request, 'chat.html', {})
+
+
+@login_required
+def inbox(request):        
     # Set of messaging partners of user
     messages1 = Message.objects.filter(recipient=request.user).order_by('-created_at')
     senders = set()
@@ -156,11 +211,16 @@ def chat(request):
         sender = message.sender
         senders.add(sender)
 
-    for message in messages1:
-        try:
+    if request.method == 'POST':
+        for message in messages1:
+            #try:
             # TODO decrypt message content with your password
-            message.content = message.content
-        except Exception:
-            message.content = 'Message content could not be decrypted.'
-
-    return render(request, 'chat.html', {'messages1': messages1, 'senders': senders})
+            password = bytes(request.POST['password'], 'UTF-8')
+            print(len(message.content))
+            message.content = decrypt_message(message.content, request.user, password)
+                 
+            #except Exception:
+                #message.content = '<This message is protected>'
+                
+        
+    return render(request, 'messages.html', {'messages1': messages1, 'senders': senders})

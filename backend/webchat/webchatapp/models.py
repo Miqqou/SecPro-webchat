@@ -12,6 +12,7 @@ class UserKey(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     publicKey = models.BinaryField(null= True)
     privateCryptedKey = models.BinaryField(null= True)
+    salt = models.BinaryField(null= True)
 
 
 
@@ -21,7 +22,7 @@ class MessageManager(models.Manager):
 
 
 def validate_message_content(value):
-    if len(value) > 1000:
+    if len(value) > 500:
         raise ValidationError('Message is too long')
     
 
@@ -29,7 +30,7 @@ def validate_message_content(value):
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
-    content = models.CharField(max_length=1000, validators=[validate_message_content])
+    content = models.BinaryField(max_length=500, validators=[validate_message_content])
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=30))
     is_encrypted = models.BooleanField(default=True)
