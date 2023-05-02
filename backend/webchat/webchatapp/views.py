@@ -71,7 +71,7 @@ def generate_keys_from_password(password):
     )
 
     # Encrypting the private key with the user password.
-    salt = bytes(str(os.urandom(16)), 'UTF-8')
+    salt = os.urandom(32)
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
