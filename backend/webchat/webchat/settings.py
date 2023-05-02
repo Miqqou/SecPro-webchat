@@ -25,9 +25,10 @@ SECRET_KEY = 'django-insecure-il(ryh2!q@v-e_6e1#qkd46ow8!@d!y4#v2-3pekgueywyp-)1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Secure connection settings
 ALLOWED_HOSTS = []
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = False # TODO: change to True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
@@ -118,8 +119,10 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+# use Django’s translation system
 USE_I18N = True
 
+# Time zone support
 USE_TZ = True
 
 
