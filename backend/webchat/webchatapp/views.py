@@ -73,10 +73,10 @@ def generate_keys_from_password(password):
     # Encrypting the private key with the user password.
     salt = bytes(str(os.urandom(16)), 'UTF-8')
     kdf = PBKDF2HMAC(
-    algorithm=hashes.SHA256(),
-    length=32,
-    salt=salt,
-    iterations=100000,
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=480000,
     )
     key = base64.urlsafe_b64encode(kdf.derive(password))
 
@@ -165,7 +165,7 @@ def decrypt_message(encrypted_message, user, pw):
         algorithm=hashes.SHA256(),
         length=32,
         salt=salt,
-        iterations=100000,
+        iterations=480000,
     )
     key = base64.urlsafe_b64encode(kdf.derive(pw))
 
