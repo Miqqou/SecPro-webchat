@@ -14,6 +14,7 @@
 <br>
 <label for="form-select">Filter by sender: </label>
 <select onchange="filterMessages()" class="form-select" id="recipient"> 
+  <option selected value="default"> </option>
   {%for sender in senders%}
   <option value="">{{ sender.username }} </option>
 {% endfor %}

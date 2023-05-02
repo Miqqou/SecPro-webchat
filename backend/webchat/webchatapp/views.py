@@ -195,18 +195,23 @@ def decrypt_message(encrypted_message, user, pw):
 @login_required
 def chat(request):
     if request.method == 'POST':
-        recipient = request.POST['recipient']
-        content = request.POST['content']
-        recipient_user = User.objects.get(username=recipient)
+        try:
+            recipient = request.POST['recipient']
+            content = request.POST['content']
+            recipient_user = User.objects.get(username=recipient)
 
-        if len(content) > 500:
-            messages.error(request, ("Too long message! 500 char max"))
-        else:
-            message = Message(sender=request.user, recipient=recipient_user, 
-                            content=encrypt_message(content, recipient_user), 
-                            created_at=timezone.now())
-            message.save()
-            return redirect('chat')
+            if len(content) > 500:
+                messages.error(request, ("Too long message! 500 char max"))
+            else:
+    
+                    message = Message(sender=request.user, recipient=recipient_user, 
+                                        content=encrypt_message(content, recipient_user), 
+                                        created_at=timezone.now())
+                    message.save()
+            return redirect('chat') 
+        except Exception as e:
+            messages.error(request, ("Couldn't sent message! User not found."))
+                
     
     return render(request, 'chat.html', {})
 
@@ -239,7 +244,7 @@ def inbox(request):
                         
         except Exception:
             messages.error(request, ("Wrong password, couldn't decrypt!"))
-            return render(request, 'messages.html', {})   
+            return render(request, 'messages.html', {'number_of_messages' : number_of_messages})   
             
     else:
-        return render(request, 'messages.html', {'number_of_messages' : number_of_messages, 'messages1': messages1, 'senders': senders}) 
+        return render(request, 'messages.html', {'number_of_messages' : number_of_messages, 'senders': senders}) 

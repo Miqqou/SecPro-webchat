@@ -2,25 +2,23 @@
 
 {% block content %}
 
-<br>
-<h2>Send Message</h2>
+<h1>Send Message</h1>
 <!-- <div class="boxed"> -->
-  <div class="overflow-auto"></div>
+<div class="overflow-auto">
 
-  <form method="post">
-    {% csrf_token %}
+<form method="post">
+  {% csrf_token %}
 
 <!-- TODO: Select partner, messages(user, partner)-->
-<a>Messages with (?)</a>
 <div class="container">
-  <label for="recipient">Recipient (username):</label>
+  <label for="recipient">Recipient (username):</label> <br>
   <input type="text" id="recipient" name="recipient"><br>
-
+  <br>
 <div class="boxed"> 
-<br>
 
 
-    <label for="content">Message:</label>
+
+    <label for="content">Message:</label> <br>
     <textarea id="content" name="content" rows="6" cols="50"></textarea><br>
     <input type="submit" value="Send">
   </form>
