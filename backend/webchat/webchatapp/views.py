@@ -135,7 +135,14 @@ def encrypt_message(message, receiver):
     # Encoding Bytes
     message_encoded = message.encode('UTF-8')
 
+    '''padding.OAEP(
+        mgf=padding.MGF1(algorithm=SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+        )'''
+
     # Crypting the message with receiver's public key.
+    # TODO: - change padding
     encrypted_message = public_key.encrypt(
         message_encoded,
         padding.PKCS1v15()
@@ -147,12 +154,6 @@ def decrypt_message(encrypted_message, user, pw):
     user_keys = UserKey.objects.get(user=user)
     user_private_key_encrypted = user_keys.privateCryptedKey
     salt = user_keys.salt
-
-
-    '''private_key = serialization.load_pem_private_key(
-        user_private_key_encrypted,
-        password=pw # If the private key is not password-protected
-        )'''
 
     # derive the Fernet key from the password and salt
     kdf = PBKDF2HMAC(
@@ -169,8 +170,10 @@ def decrypt_message(encrypted_message, user, pw):
         private_key,
         password=pw
         )
+    
     # 512 byte key - 11 byte padding = 501 byte key.
-    # ensuring that the message is shorter than 501 bytes.
+    # !! ENSURE that the message is shorter than 501 bytes. !!
+    # TODO: - change padding
     decrypted_message = private_key.decrypt(
         encrypted_message,
         padding.PKCS1v15()
@@ -230,4 +233,4 @@ def inbox(request):
             return render(request, 'messages.html', {})   
             
     else:
-        return render(request, 'messages.html', {'number_of_messages' : number_of_messages}) 
+        return render(request, 'messages.html', {'number_of_messages' : number_of_messages, 'messages1': messages1, 'senders': senders}) 

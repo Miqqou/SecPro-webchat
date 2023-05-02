@@ -3,13 +3,32 @@
 {% block content %}
 
 <h1>Messages</h1>
-<div class="boxed">
+
   <form method="post">
     {% csrf_token %}
     <label for="password">Password:</label>
   <input type="password" id="password" name="password">
   <input type="submit" value="Unlock messages">
 </form>
+
+<br>
+<label for="form-select">Filter by sender: </label>
+<select onchange="filterMessages()" class="form-select" id="recipient"> 
+  {%for sender in senders%}
+  <option value="">{{ sender.username }} </option>
+{% endfor %}
+</select>
+
+<script type="text/javascript">
+  function filterMessages() {
+      d = document.getElementById("recipient").value;
+      alert(d);
+  }
+</script>
+
+
+<br>
+<div class="boxed">
     {% if messages1%}
       <ul>
         <div class="overflow-auto">
