@@ -15,6 +15,7 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
+import hashlib
 
 
 # Create your views here.
@@ -145,7 +146,11 @@ def encrypt_message(message, receiver):
     # TODO: - change padding
     encrypted_message = public_key.encrypt(
         message_encoded,
-        padding.PKCS1v15()
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
     )
 
     return encrypted_message
@@ -176,8 +181,12 @@ def decrypt_message(encrypted_message, user, pw):
     # TODO: - change padding
     decrypted_message = private_key.decrypt(
         encrypted_message,
-        padding.PKCS1v15()
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
         )
+    )
 
     return decrypted_message.decode('UTF-8')
 
