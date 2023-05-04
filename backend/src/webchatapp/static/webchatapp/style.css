@@ -1,12 +1,5 @@
-a {
-    color:white;
-}
-  
-h1 {
-    color:cyan;
-}
-a nav-link{
-    color:black;
+.register-form {       
+    text-align: left;
 }
 
 .boxed {

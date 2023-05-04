@@ -8,9 +8,10 @@ from django.forms.fields import EmailField
 from django.forms.forms import Form  
 
 class UserRegistrationForm(UserCreationForm):
-    username = forms.CharField(label='Username', help_text="4-20 letters/numbers/symbols (@ . + - _) allowed", min_length=4, max_length=20)  
-    password1 = forms.CharField(label='Password', help_text="12 characters minimum", widget=forms.PasswordInput)  
-    password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)  
+    username = forms.CharField(label='Username* ', help_text="4-20 letters/numbers/symbols (@ . + - _) allowed", min_length=4, max_length=20
+                               ,widget=forms.TextInput(attrs={'class':'form-control'}))  
+    password1 = forms.CharField(label='Password* ', help_text="12 characters minimum", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='Confirm password* ', widget=forms.PasswordInput(attrs={'class':'form-control'}))  
     
     class Meta:
         model = User
