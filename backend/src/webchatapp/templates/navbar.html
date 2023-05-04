@@ -1,8 +1,9 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="dark" style="background-image: url({% static 'webchatapp/assets/banner.jpg' %}); background-position: center;">
+<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="background-image: url({% static 'webchatapp/assets/banner.jpg' %}); background-position: center;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">
+        <a class="navbar-brand" href="{% url 'home' %}" 
+        style="color: white;">
             <b>WebChatApp</b>
         </a>
 
@@ -18,13 +19,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'inbox' %}"> <u><b>Inbox</b></u></a>
             </li>
-
-        <a
-            class="nav-item" >
+        </ul>
+        <ul class="navbar-nav me-right mb-2 mb-lg-0">
             <a class="nav-link" href="{% url 'logout' %}"> <b><u>Sign Out</u></b></a>
-        </a>
+        </ul>
         {% else %}
-
+        <ul class="navbar-nav me-right mb-2 mb-lg-0">
         <li class="nav-item">
             <a class="nav-link" href="{% url 'create' %}"> <b><u>Register</u></b> </a>
         <li class="nav-item">
