@@ -9,7 +9,7 @@ from django.forms.forms import Form
 
 class UserRegistrationForm(UserCreationForm):
     username = forms.CharField(label='Username', help_text="4-20 letters/numbers/symbols (@ . + - _) ", min_length=4, max_length=20)  
-    password1 = forms.CharField(label='Password', help_text="10 characters minimum", widget=forms.PasswordInput)  
+    password1 = forms.CharField(label='Password', help_text="12 characters minimum", widget=forms.PasswordInput)  
     password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)  
     
     class Meta:
