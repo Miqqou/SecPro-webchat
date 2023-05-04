@@ -16,6 +16,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import hashlib
+from django.views.decorators.cache import never_cache
 
 
 # Create your views here.
@@ -217,6 +218,7 @@ def chat(request):
 
 
 @login_required
+@never_cache
 def inbox(request):        
     # Set of messaging partners of user
     messages1 = Message.objects.filter(recipient=request.user).order_by('-created_at')
