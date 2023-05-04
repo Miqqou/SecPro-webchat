@@ -8,7 +8,7 @@ from django.forms.fields import EmailField
 from django.forms.forms import Form  
 
 class UserRegistrationForm(UserCreationForm):
-    username = forms.CharField(label='Username', help_text="4-20 letters/numbers/symbols (@ . + - _) ", min_length=4, max_length=20)  
+    username = forms.CharField(label='Username', help_text="4-20 letters/numbers/symbols (@ . + - _) allowed", min_length=4, max_length=20)  
     password1 = forms.CharField(label='Password', help_text="12 characters minimum", widget=forms.PasswordInput)  
     password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)  
     
@@ -23,7 +23,7 @@ class UserRegistrationForm(UserCreationForm):
         new = User.objects.filter(username = username) 
         print(len(username))
         if len(username) < 4:
-            raise ValidationError("Username should be longer than 3 char", code="invalid")  
+            raise ValidationError("Username should be longer than 3 chars", code="invalid")  
         if new.count():  
             raise ValidationError("User Already Exist!!", code="invalid")  
         return username  
