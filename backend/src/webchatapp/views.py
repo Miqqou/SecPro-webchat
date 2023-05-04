@@ -5,7 +5,7 @@ from .models import Message, UserKey
 from .forms import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import django.contrib.auth.hashers as hasher
