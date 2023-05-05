@@ -1,7 +1,6 @@
 from django.utils import timezone
 from django.db import models
-import django.contrib.auth.hashers as hasher
-import os
+
 from django.contrib.auth.models import User
 
 from django.forms import ValidationError
