@@ -56,6 +56,14 @@ def generate_keys_from_password(password):
     key_size=4096,
     )
 
+    # Used for testing.
+    '''privateKey2 = privateKey.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption()
+        )
+    print("privatekey:", str(privateKey2))'''
+
     encryption_algorithm = serialization.BestAvailableEncryption(password)
 
     private_key_enrypted = privateKey.private_bytes(
@@ -63,7 +71,9 @@ def generate_keys_from_password(password):
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=encryption_algorithm,
         )
-
+    
+    # Used for testing
+    # print("encryp privkey: ", private_key_enrypted)
 
     # Public key format.
     publicKey = privateKey.public_key().public_bytes(
@@ -81,7 +91,11 @@ def generate_keys_from_password(password):
     )
     key = base64.urlsafe_b64encode(kdf.derive(password))
 
+    # print("key", key)
+
     private_key_enrypted = Fernet(key).encrypt(private_key_enrypted)
+
+    # print("final key:", private_key_enrypted)
 
     return publicKey, private_key_enrypted, salt 
 
@@ -140,12 +154,7 @@ def encrypt_message(message, receiver):
 
     # Encoding Bytes
     message_encoded = message.encode('UTF-8')
-
-    '''padding.OAEP(
-        mgf=padding.MGF1(algorithm=SHA256()),
-        algorithm=hashes.SHA256(),
-        label=None
-        )'''
+    #print(message_encoded)
 
     # Crypting the message with receiver's public key.
     # TODO: - change padding
@@ -157,6 +166,7 @@ def encrypt_message(message, receiver):
             label=None
         )
     )
+    #print(encrypted_message)
 
     return encrypted_message
 
@@ -183,7 +193,6 @@ def decrypt_message(encrypted_message, user, pw):
     
     # 512 byte key - 11 byte padding = 501 byte key.
     # !! ENSURE that the message is shorter than 501 bytes. !!
-    # TODO: - change padding
     decrypted_message = private_key.decrypt(
         encrypted_message,
         padding.OAEP(
@@ -201,8 +210,8 @@ def decrypt_message(encrypted_message, user, pw):
 def chat(request):
     if request.method == 'POST':
         try:
-            recipient = request.POST['recipient']
-            content = request.POST['content']
+            recipient = str(request.POST['recipient']).strip()
+            content = str(request.POST['content'])
             recipient_user = User.objects.get(username=recipient)
 
             if len(content) > 500:
