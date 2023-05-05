@@ -91,16 +91,20 @@ def register_user(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
+            try:
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
 
-            public_key, private_key_enrypted, salt = generate_keys_from_password(password)
+                # For axes, limits account creation to failed login amount
+                authenticate(request=request,)
 
+                form.save()
 
+                public_key, private_key_enrypted, salt = generate_keys_from_password(password)
 
-            #passwordConfirm = form.cleaned_data['passwordConfirm']
-            user = authenticate(username=username, password=password)
+                user = authenticate(request=request, username=username, password=password)
+            except:
+                user == None
 
 
             if user is not None:
