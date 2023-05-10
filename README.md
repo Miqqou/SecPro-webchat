@@ -1,11 +1,13 @@
 # SecPro-webchat
 A web application for messaging between users securely. Made for Secure programming course of Tampere University.
 
-# Running
+# Install
 - cd backend
 - pip install -r requirements.txt
 - cd src
 - python manage.py migrate
+
+# Running
 - python manage.py runserver
 
 # Testing
