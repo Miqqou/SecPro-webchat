@@ -159,3 +159,4 @@ LOGOUT_REDIRECT_URL = "home"
 # Axes settings
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 0.167
+AXES_LOCKOUT_CALLABLE = "webchatapp.views.lockout"

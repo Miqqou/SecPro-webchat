@@ -17,6 +17,8 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import hashlib
 from django.views.decorators.cache import never_cache
+from django.http import JsonResponse
+
 
 
 # Create your views here.
@@ -72,6 +74,7 @@ def generate_keys_from_password(password):
         encryption_algorithm=encryption_algorithm,
         )
     
+    
     # Used for testing
     # print("encryp privkey: ", private_key_enrypted)
 
@@ -90,8 +93,6 @@ def generate_keys_from_password(password):
         iterations=480000,
     )
     key = base64.urlsafe_b64encode(kdf.derive(password))
-
-    # print("key", key)
 
     private_key_enrypted = Fernet(key).encrypt(private_key_enrypted)
 
@@ -148,16 +149,15 @@ def logout_user(request):
 
 def encrypt_message(message, receiver):
 
+    # Fetching the public key of the recipient.
     receiver_keys = UserKey.objects.get(user=receiver)
     receiver_public_key = receiver_keys.publicKey
     public_key = serialization.load_pem_public_key(receiver_public_key)
 
     # Encoding Bytes
     message_encoded = message.encode('UTF-8')
-    #print(message_encoded)
 
-    # Crypting the message with receiver's public key.
-    # TODO: - change padding
+    # Encrypting the message with receiver's public key.
     encrypted_message = public_key.encrypt(
         message_encoded,
         padding.OAEP(
@@ -166,16 +166,17 @@ def encrypt_message(message, receiver):
             label=None
         )
     )
-    #print(encrypted_message)
 
     return encrypted_message
 
 def decrypt_message(encrypted_message, user, pw):
+
+    # Fetch recipient's encrypted privatekey and salt
     user_keys = UserKey.objects.get(user=user)
     user_private_key_encrypted = user_keys.privateCryptedKey
     salt = user_keys.salt
 
-    # derive the Fernet key from the password and salt
+    # Derive the Fernet key from the password and salt
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -184,15 +185,16 @@ def decrypt_message(encrypted_message, user, pw):
     )
     key = base64.urlsafe_b64encode(kdf.derive(pw))
 
+    # Decrypt the private_key with the key.
     private_key = Fernet(key).decrypt(user_private_key_encrypted)
 
+    # Decrypt the serialization level with the password
     private_key = serialization.load_pem_private_key(
         private_key,
         password=pw
         )
     
-    # 512 byte key - 11 byte padding = 501 byte key.
-    # !! ENSURE that the message is shorter than 501 bytes. !!
+    # Decrypt the message
     decrypted_message = private_key.decrypt(
         encrypted_message,
         padding.OAEP(
@@ -248,18 +250,23 @@ def inbox(request):
 
 
     if request.method == 'POST':
+        password = bytes(request.POST['password'], 'UTF-8')
+        user = authenticate(request=request, username=request.user.username, password=password)
         try:
             for message in messages1:
-                password = bytes(request.POST['password'], 'UTF-8')
+                
                 message.content = decrypt_message(message.content, request.user, password)
 
                 message.read_at = timezone.now()
 
             return render(request, 'messages.html', {'messages1': messages1, 'senders': senders}) 
-                        
+                            
         except Exception:
             messages.error(request, ("Wrong password, couldn't decrypt!"))
             return render(request, 'messages.html', {'number_of_messages' : number_of_messages})   
             
     else:
         return render(request, 'messages.html', {'number_of_messages' : number_of_messages, 'senders': senders}) 
+
+def lockout(request, credentials, *args, **kwargs):
+    return JsonResponse({"status": "COOLDOWN: Too many login failures. Wait 10 minutes to try again."}, status=403)
