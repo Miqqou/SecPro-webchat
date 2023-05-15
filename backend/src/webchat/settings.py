@@ -21,15 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-il(ryh2!q@v-e_6e1#qkd46ow8!@d!y4#v2-3pekgueywyp-)1'
+# TODO: GENERATE A NEW KEY
+SECRET_KEY = 'django-insecure-il(ryh2!q@v-e_6e1#qkd46ow8!@d!y4#v2-3pekgueywyp-)1'   
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# TODO: Set to True 
+DEBUG = False
 
 # Secure connection settings
-ALLOWED_HOSTS = []
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = False # TODO: change to True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']                      # TODO: change to match HOST
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # TODO: configure SSL/HTTPS
+#SECURE_SSL_REDIRECT = False                                    # TODO: change to True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
@@ -39,9 +41,10 @@ CSRF_TRUSTED_ORIGINS = []
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Content Security Policy
+CSP_DEFAULT_SRC = ("'self'")
 CSP_IMG_SRC = ("'self'")
-CSP_STYLE_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/")
-CSP_SCRIPT_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/")
+CSP_STYLE_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css")
+CSP_SCRIPT_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js")
 
 # Application definition
 INSTALLED_APPS = [
@@ -142,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Europe/Moscow'                     # TODO: implement to match user timezone
 
 # use Django’s translation system
 USE_I18N = True
