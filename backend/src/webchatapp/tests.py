@@ -17,10 +17,10 @@ c.post("/webchatapp/create",
 
 class TestAuthenticationCooldown(TestCase):
     def test_login_cooldown(self):
-        '''for i in range(0,5):
+        for i in range(0,5):
             response = c.post("/webchatapp/login", 
                             {"username": "testitestaaja2", 
-                            "password": "wrongpassword"})'''
+                            "password": "wrongpassword"})
         response = c.post("/webchatapp/login", 
                         {"username": "testitestaaja2", 
                         "password": "secreaasdasdGGFAF!12!"})
@@ -28,10 +28,10 @@ class TestAuthenticationCooldown(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_message_decryption_cooldown(self):
-        '''for i in range(0,5):
+        for i in range(0,5):
             response = c.post("/webchatapp/login", 
                             {"username": "testitestaaja", 
-                            "password": "wrongpassword"})'''
+                            "password": "wrongpassword"})
         response = c.post("/webchatapp/login", 
                 {"username": "testitestaaja2", 
                 "password": "secreaasdasdGGFAF!12!"})

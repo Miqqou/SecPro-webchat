@@ -18,12 +18,9 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = 'webchatapp/static/'
-
-# Add these new lines
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'webchatapp/static/'),
 )
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 

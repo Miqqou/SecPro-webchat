@@ -8,20 +8,18 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-import django.contrib.auth.hashers as hasher
 
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
-import hashlib
 from django.views.decorators.cache import never_cache
 from django.http import JsonResponse
 
 
-
 # Create your views here.
+
 def home(request):
     return render(request, 'index.html', {})
 
@@ -58,14 +56,6 @@ def generate_keys_from_password(password):
     key_size=4096,
     )
 
-    # Used for testing.
-    '''privateKey2 = privateKey.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption()
-        )
-    print("privatekey:", str(privateKey2))'''
-
     encryption_algorithm = serialization.BestAvailableEncryption(password)
 
     private_key_enrypted = privateKey.private_bytes(
@@ -73,10 +63,6 @@ def generate_keys_from_password(password):
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=encryption_algorithm,
         )
-    
-    
-    # Used for testing
-    # print("encryp privkey: ", private_key_enrypted)
 
     # Public key format.
     publicKey = privateKey.public_key().public_bytes(
@@ -96,10 +82,7 @@ def generate_keys_from_password(password):
 
     private_key_enrypted = Fernet(key).encrypt(private_key_enrypted)
 
-    # print("final key:", private_key_enrypted)
-
     return publicKey, private_key_enrypted, salt 
-
 
 
 def register_user(request):
@@ -139,6 +122,7 @@ def register_user(request):
         form = UserRegistrationForm
 
     return render(request, 'authentication/create.html', {'form':form})
+
 
 @login_required
 def logout_user(request):
@@ -207,7 +191,6 @@ def decrypt_message(encrypted_message, user, pw):
     return decrypted_message.decode('UTF-8')
 
 
-
 @login_required
 def chat(request):
     if request.method == 'POST':
@@ -268,5 +251,6 @@ def inbox(request):
     else:
         return render(request, 'messages.html', {'number_of_messages' : number_of_messages, 'senders': senders}) 
 
+# Django axes lockout/cooldown message page
 def lockout(request, credentials, *args, **kwargs):
     return JsonResponse({"status": "COOLDOWN: Too many login failures. Wait 10 minutes to try again."}, status=403)
