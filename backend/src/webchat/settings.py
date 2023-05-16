@@ -16,12 +16,14 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_ROOT = os.path.join(BASE_DIR, 'webchatapp/static')
+
+#STATICFILES_DIRS = (
+#    os.path.join(STATIC_ROOT, 'webchatapp'),
+#)
 
 STATIC_URL = 'webchatapp/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'webchatapp/static/'),
-)
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -48,10 +50,10 @@ CSRF_TRUSTED_ORIGINS = []
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Content Security Policy
-CSP_DEFAULT_SRC = ("'self'")
-CSP_IMG_SRC = ("'self'")
-CSP_STYLE_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css")
-CSP_SCRIPT_SRC = ("'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js")
+CSP_DEFAULT_SRC = ("'self'", STATIC_URL)
+CSP_IMG_SRC = ("'self'", STATIC_URL )
+CSP_STYLE_SRC = ("'self'", STATIC_URL , "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css")
+CSP_SCRIPT_SRC = ("'self'", STATIC_URL ,"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js")
 
 # Application definition
 INSTALLED_APPS = [
