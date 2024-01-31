@@ -5,15 +5,21 @@ A web application for messaging between users securely. Made for Secure programm
 Python 3.4 (or later)
 
 # Setup
-- cd backend
-- pip install -r requirements.txt
-- cd src
-- python manage.py migrate
-- python manage.py createsuperuser   // for creating first admin account
+```
+cd backend
+pip install -r requirements.txt
+cd src
+python manage.py migrate
+python manage.py createsuperuser   # for creating first admin account
+```
 
 # Running
-- python manage.py runserver
+```
+python manage.py runserver
+```
 
 # Testing
-- python manage.py test
-- python manage.py axes_reset  // RESETS ALL the login attempt cooldowns
+```
+python manage.py test
+python manage.py axes_reset  # RESETS ALL the login attempt cooldowns
+```
