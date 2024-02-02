@@ -1,5 +1,5 @@
 # SecPro-webchat
-A web application for messaging between users securely. Made for Secure programming course of Tampere University.
+A web application for messaging between users securely. Made for Secure programming course of Tampere University. Implemented with Django.
 
 # Documentation
 [Documentation](Documentation.pdf)
